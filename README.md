@@ -1,6 +1,6 @@
 # job-description-and-wages
 
-We find SOC titles by "job titles" through ONET data.
+We find SOC titles by "job titles" through ONET data. SOC is defined here: https://www.bls.gov/soc/2018/major_groups.htm. Note that it changes over time.
 
 ## Sources
 [![O&ast;NET](https://www.onetcenter.org/image/link/onet-in-it.svg)](https://www.onetcenter.org/database.html)
