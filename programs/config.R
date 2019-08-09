@@ -10,3 +10,5 @@ onet.src.file <- paste("db",onet.src.version,"excel.zip",sep="_")
 oes.src.base <- "https://www.bls.gov/oes/special.requests/"
 oes.src.version <- "18"
 oes.src.file <- paste("oesm",oes.src.version,"nat.zip",sep="")
+
+bls.version <- "2018"
