@@ -1,14 +1,15 @@
 ---
 title: "Programs"
-author: 
-  1:
-    name: "Lars Vilhuber"
+author:
+  '1':
+    name: Lars Vilhuber
 date: "`r Sys.Date()`"
-output: 
-  html_document: 
+output:
+  html_document:
     keep_md: yes
     number_sections: yes
-editor_options: 
+  pdf_document: default
+editor_options:
   chunk_output_type: console
 ---
 
@@ -40,6 +41,13 @@ source(file.path(programs,"01_download_onet.R"),echo=TRUE)
 ```
 
 ## Mapping job titles to SOC
-```{r subselect_onet,eval=FALSE,cache=TRUE}
-source(file.path(programs,"02_subselect_onet.R"),echo=TRUE)
+We also merge in BLS data on salaries.
+```{r subselect_onet,eval=TRUE,cache=TRUE,echo=FALSE}
+source(file.path(programs,"02_subset_onet.R"),echo=TRUE)
 ```
+
+## Print out the table
+```{r table1}
+kable(nlm.titles %>% select("Job Title","Title", "Alternate Title","A_PCT25","A_MEDIAN","A_PCT75"))
+```
+
