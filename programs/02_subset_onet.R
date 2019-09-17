@@ -17,6 +17,8 @@ BLS.data <- read_excel(file.path(acquired,paste0("national_M",oes.src.version,"_
 # load the jobtitle data (our own list)
 job_titles <- read_excel(file.path(generated,"job_titles.xlsx"))
 names(job_titles) <- c("Job Title")
+# we might want to add a few more to improve match probabilities
+job_titles[nrow(job_titles)+1,] <- "Librarian"
 
 # get both the official 
 soc_job_titles <- Alternate_Titles %>% select("O*NET-SOC Code",Title) %>%

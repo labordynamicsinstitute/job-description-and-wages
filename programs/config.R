@@ -11,3 +11,4 @@ oes.src.base <- "https://www.bls.gov/oes/special.requests/"
 oes.src.version <- "2018"
 oes.src.file <- paste("oesm",oes.src.version,"nat.zip",sep="")
 
+soc_definitions_loc <- "https://www.bls.gov/soc/soc_structure_2010.xls"

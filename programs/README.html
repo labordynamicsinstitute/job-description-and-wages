@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2019-08-09" />
+<meta name="date" content="2019-09-17" />
 
 <title>Programs</title>
 
@@ -308,7 +308,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Programs</h1>
 <h4 class="author"><em>true</em></h4>
-<h4 class="date"><em>2019-08-09</em></h4>
+<h4 class="date"><em>2019-09-17</em></h4>
 
 </div>
 
@@ -374,7 +374,9 @@ $(document).ready(function () {
 ## &gt; oes.src.version &lt;- &quot;2018&quot;
 ## 
 ## &gt; oes.src.file &lt;- paste(&quot;oesm&quot;, oes.src.version, &quot;nat.zip&quot;, 
-## +     sep = &quot;&quot;)</code></pre>
+## +     sep = &quot;&quot;)
+## 
+## &gt; soc_definitions_loc &lt;- &quot;https://www.bls.gov/soc/soc_structure_2010.xls&quot;</code></pre>
 <p>Note that the path <code>interwrk</code> is transitory, and is only kept during processing. It will be empty in the replication archive.</p>
 </div>
 <div id="download-and-unpack-the-onet-data" class="section level2">
@@ -382,12 +384,17 @@ $(document).ready(function () {
 <ul>
 <li>Input data: O*NET</li>
 <li>Output data: path `acquired’</li>
+<li>this part is only run on-demand (manually)</li>
 </ul>
 <pre class="r"><code>source(file.path(programs,&quot;01_download_onet.R&quot;),echo=TRUE)</code></pre>
 </div>
+<div id="download-soc-data" class="section level2">
+<h2><span class="header-section-number">1.3</span> Download SOC data</h2>
+<p>We can download definitions from <a href="https://www.bls.gov/soc/soc_structure_2010.xls" class="uri">https://www.bls.gov/soc/soc_structure_2010.xls</a>. In particular, we might be interested in the major groupings. (not done yet)</p>
+</div>
 <div id="mapping-job-titles-to-soc" class="section level2">
-<h2><span class="header-section-number">1.3</span> Mapping job titles to SOC</h2>
-<p>We also merge in BLS data on salaries.</p>
+<h2><span class="header-section-number">1.4</span> Mapping job titles to SOC</h2>
+<p>We merge the alternate titles (as defined by O*Net) and the BLS data (merged in via occupational code). We keep all observations in our normative list of NLM-state related occupations.</p>
 <pre><code>## 
 ## &gt; source(file.path(rprojroot::find_rstudio_root_file(), 
 ## +     &quot;pathconfig.R&quot;), echo = FALSE)
@@ -406,6 +413,8 @@ $(document).ready(function () {
 ## &gt; job_titles &lt;- read_excel(file.path(generated, &quot;job_titles.xlsx&quot;))
 ## 
 ## &gt; names(job_titles) &lt;- c(&quot;Job Title&quot;)
+## 
+## &gt; job_titles[nrow(job_titles) + 1, ] &lt;- &quot;Librarian&quot;
 ## 
 ## &gt; soc_job_titles &lt;- Alternate_Titles %&gt;% select(&quot;O*NET-SOC Code&quot;, 
 ## +     Title) %&gt;% distinct()
@@ -429,14 +438,19 @@ $(document).ready(function () {
 ## 
 ## &gt; write.csv(nlm.titles, file = file.path(outputs, &quot;nlm.titles.csv&quot;))</code></pre>
 </div>
-<div id="print-out-the-table" class="section level2">
-<h2><span class="header-section-number">1.4</span> Print out the table</h2>
-<pre class="r"><code>kable(nlm.titles %&gt;% select(&quot;Job Title&quot;,&quot;Title&quot;, &quot;Alternate Title&quot;,&quot;A_PCT25&quot;,&quot;A_MEDIAN&quot;,&quot;A_PCT75&quot;))</code></pre>
+<div id="results" class="section level2">
+<h2><span class="header-section-number">1.5</span> Results</h2>
+<p>The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries indicate that no occupation code could be found on O*Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC).</p>
+<pre class="r"><code>nlm.extract &lt;- nlm.titles %&gt;% 
+  distinct(`Job Title`,SOC,.keep_all = TRUE) %&gt;% 
+  select(&quot;Job Title&quot;,&quot;Title&quot;,&quot;SOC&quot;, &quot;Alternate Title&quot;,&quot;A_PCT25&quot;,&quot;A_MEDIAN&quot;,&quot;A_PCT75&quot;)
+kable(nlm.extract)</code></pre>
 <table>
 <thead>
 <tr class="header">
 <th align="left">Job Title</th>
 <th align="left">Title</th>
+<th align="left">SOC</th>
 <th align="left">Alternate Title</th>
 <th align="left">A_PCT25</th>
 <th align="left">A_MEDIAN</th>
@@ -447,53 +461,42 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Archivists</td>
 <td align="left">Archivists</td>
+<td align="left">25-4011</td>
 <td align="left">NA</td>
 <td align="left">38090</td>
 <td align="left">52240</td>
 <td align="left">71250</td>
 </tr>
 <tr class="even">
-<td align="left">Archivists</td>
-<td align="left">Archivists</td>
-<td align="left">Archivist</td>
-<td align="left">38090</td>
-<td align="left">52240</td>
-<td align="left">71250</td>
-</tr>
-<tr class="odd">
 <td align="left">Curators</td>
 <td align="left">Curators</td>
+<td align="left">25-4012</td>
 <td align="left">NA</td>
 <td align="left">39580</td>
 <td align="left">53780</td>
 <td align="left">72830</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Curators</td>
 <td align="left">Archeologists</td>
+<td align="left">19-3091</td>
 <td align="left">Curator</td>
 <td align="left">48020</td>
 <td align="left">62410</td>
 <td align="left">80230</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Curators</td>
 <td align="left">Archivists</td>
+<td align="left">25-4011</td>
 <td align="left">Curator</td>
 <td align="left">38090</td>
 <td align="left">52240</td>
 <td align="left">71250</td>
 </tr>
-<tr class="even">
-<td align="left">Curators</td>
-<td align="left">Curators</td>
-<td align="left">Curator</td>
-<td align="left">39580</td>
-<td align="left">53780</td>
-<td align="left">72830</td>
-</tr>
 <tr class="odd">
 <td align="left">Data Librarians</td>
+<td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
@@ -503,6 +506,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Biofuels/Biodiesel Technology and Product Development Managers</td>
+<td align="left">11-9041</td>
 <td align="left">Scientist</td>
 <td align="left">112400</td>
 <td align="left">140760</td>
@@ -511,6 +515,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Mathematicians</td>
+<td align="left">15-2021</td>
 <td align="left">Scientist</td>
 <td align="left">73490</td>
 <td align="left">101900</td>
@@ -519,6 +524,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Chemical Engineers</td>
+<td align="left">17-2041</td>
 <td align="left">Scientist</td>
 <td align="left">81900</td>
 <td align="left">104910</td>
@@ -527,6 +533,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Nuclear Engineers</td>
+<td align="left">17-2161</td>
 <td align="left">Scientist</td>
 <td align="left">85840</td>
 <td align="left">107600</td>
@@ -535,6 +542,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Nanosystems Engineers</td>
+<td align="left">17-2199</td>
 <td align="left">Scientist</td>
 <td align="left">69890</td>
 <td align="left">96980</td>
@@ -543,6 +551,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Manufacturing Engineering Technologists</td>
+<td align="left">17-3029</td>
 <td align="left">Scientist</td>
 <td align="left">47500</td>
 <td align="left">63200</td>
@@ -550,39 +559,26 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td align="left">Scientists</td>
-<td align="left">Nanotechnology Engineering Technologists</td>
-<td align="left">Scientist</td>
-<td align="left">47500</td>
-<td align="left">63200</td>
-<td align="left">80670</td>
-</tr>
-<tr class="odd">
-<td align="left">Scientists</td>
 <td align="left">Biologists</td>
+<td align="left">19-1020</td>
 <td align="left">Scientist</td>
 <td align="left">56730</td>
 <td align="left">77550</td>
 <td align="left">103540</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Biochemists and Biophysicists</td>
+<td align="left">19-1021</td>
 <td align="left">Scientist</td>
 <td align="left">64230</td>
 <td align="left">93280</td>
 <td align="left">129950</td>
 </tr>
-<tr class="odd">
-<td align="left">Scientists</td>
-<td align="left">Bioinformatics Scientists</td>
-<td align="left">Scientist</td>
-<td align="left">60250</td>
-<td align="left">79590</td>
-<td align="left">98040</td>
-</tr>
 <tr class="even">
 <td align="left">Scientists</td>
-<td align="left">Geneticists</td>
+<td align="left">Bioinformatics Scientists</td>
+<td align="left">19-1029</td>
 <td align="left">Scientist</td>
 <td align="left">60250</td>
 <td align="left">79590</td>
@@ -591,6 +587,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Medical Scientists, Except Epidemiologists</td>
+<td align="left">19-1042</td>
 <td align="left">Scientist</td>
 <td align="left">59580</td>
 <td align="left">84810</td>
@@ -599,6 +596,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Astronomers</td>
+<td align="left">19-2011</td>
 <td align="left">Scientist</td>
 <td align="left">74300</td>
 <td align="left">105680</td>
@@ -607,6 +605,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Physicists</td>
+<td align="left">19-2012</td>
 <td align="left">Scientist</td>
 <td align="left">85090</td>
 <td align="left">120950</td>
@@ -615,6 +614,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Chemists</td>
+<td align="left">19-2031</td>
 <td align="left">Scientist</td>
 <td align="left">56290</td>
 <td align="left">76890</td>
@@ -623,6 +623,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Climate Change Analysts</td>
+<td align="left">19-2041</td>
 <td align="left">Scientist</td>
 <td align="left">53580</td>
 <td align="left">71130</td>
@@ -631,6 +632,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Hydrologists</td>
+<td align="left">19-2043</td>
 <td align="left">Scientist</td>
 <td align="left">61280</td>
 <td align="left">79370</td>
@@ -639,6 +641,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Remote Sensing Scientists and Technologists</td>
+<td align="left">19-2099</td>
 <td align="left">Scientist</td>
 <td align="left">75830</td>
 <td align="left">107230</td>
@@ -647,6 +650,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Anthropologists</td>
+<td align="left">19-3091</td>
 <td align="left">Scientist</td>
 <td align="left">48020</td>
 <td align="left">62410</td>
@@ -655,6 +659,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Geographers</td>
+<td align="left">19-3092</td>
 <td align="left">Scientist</td>
 <td align="left">63270</td>
 <td align="left">80300</td>
@@ -667,10 +672,12 @@ $(document).ready(function () {
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
+<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Construction Managers</td>
+<td align="left">11-9021</td>
 <td align="left">Project Manager</td>
 <td align="left">70670</td>
 <td align="left">93370</td>
@@ -679,6 +686,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Architectural and Engineering Managers</td>
+<td align="left">11-9041</td>
 <td align="left">Project Manager</td>
 <td align="left">112400</td>
 <td align="left">140760</td>
@@ -687,6 +695,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Managers, All Other</td>
+<td align="left">11-9199</td>
 <td align="left">Project Manager</td>
 <td align="left">75460</td>
 <td align="left">107480</td>
@@ -694,31 +703,17 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td align="left">Project Managers</td>
-<td align="left">Wind Energy Project Managers</td>
-<td align="left">Project Manager</td>
-<td align="left">75460</td>
-<td align="left">107480</td>
-<td align="left">143230</td>
-</tr>
-<tr class="odd">
-<td align="left">Project Managers</td>
 <td align="left">Information Technology Project Managers</td>
+<td align="left">15-1199</td>
 <td align="left">Project Manager</td>
 <td align="left">66410</td>
 <td align="left">90270</td>
 <td align="left">117070</td>
 </tr>
-<tr class="even">
-<td align="left">Project Managers</td>
-<td align="left">Environmental Engineers</td>
-<td align="left">Project Manager</td>
-<td align="left">66590</td>
-<td align="left">87620</td>
-<td align="left">112230</td>
-</tr>
 <tr class="odd">
 <td align="left">Project Managers</td>
-<td align="left">Water/Wastewater Engineers</td>
+<td align="left">Environmental Engineers</td>
+<td align="left">17-2081</td>
 <td align="left">Project Manager</td>
 <td align="left">66590</td>
 <td align="left">87620</td>
@@ -727,6 +722,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Wind Energy Engineers</td>
+<td align="left">17-2199</td>
 <td align="left">Project Manager</td>
 <td align="left">69890</td>
 <td align="left">96980</td>
@@ -735,6 +731,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Architectural Drafters</td>
+<td align="left">17-3011</td>
 <td align="left">Project Manager</td>
 <td align="left">43660</td>
 <td align="left">54920</td>
@@ -743,6 +740,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Environmental Restoration Planners</td>
+<td align="left">19-2041</td>
 <td align="left">Project Manager</td>
 <td align="left">53580</td>
 <td align="left">71130</td>
@@ -751,6 +749,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Social Science Research Assistants</td>
+<td align="left">19-4061</td>
 <td align="left">Project Manager</td>
 <td align="left">35450</td>
 <td align="left">46640</td>
@@ -759,6 +758,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Remote Sensing Technicians</td>
+<td align="left">19-4099</td>
 <td align="left">Project Manager</td>
 <td align="left">37940</td>
 <td align="left">49670</td>
@@ -767,6 +767,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Technical Directors/Managers</td>
+<td align="left">27-2012</td>
 <td align="left">Project Manager</td>
 <td align="left">48520</td>
 <td align="left">71680</td>
@@ -775,6 +776,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Intelligence Analysts</td>
+<td align="left">33-3021</td>
 <td align="left">Project Manager</td>
 <td align="left">57560</td>
 <td align="left">81920</td>
@@ -783,6 +785,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">First-Line Supervisors of Construction Trades and Extraction Workers</td>
+<td align="left">47-1011</td>
 <td align="left">Project Manager</td>
 <td align="left">52380</td>
 <td align="left">65230</td>
@@ -791,6 +794,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Researchers</td>
 <td align="left">Industrial Ecologists</td>
+<td align="left">19-2041</td>
 <td align="left">Researcher</td>
 <td align="left">53580</td>
 <td align="left">71130</td>
@@ -799,6 +803,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Researchers</td>
 <td align="left">Anthropologists</td>
+<td align="left">19-3091</td>
 <td align="left">Researcher</td>
 <td align="left">48020</td>
 <td align="left">62410</td>
@@ -807,6 +812,7 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Researchers</td>
 <td align="left">Historians</td>
+<td align="left">19-3093</td>
 <td align="left">Researcher</td>
 <td align="left">40670</td>
 <td align="left">61140</td>
@@ -819,10 +825,12 @@ $(document).ready(function () {
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
+<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">Software Engineers</td>
 <td align="left">Computer and Information Research Scientists</td>
+<td align="left">15-1111</td>
 <td align="left">Software Engineer</td>
 <td align="left">91650</td>
 <td align="left">118370</td>
@@ -831,6 +839,7 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left">Software Engineers</td>
 <td align="left">Software Developers, Applications</td>
+<td align="left">15-1132</td>
 <td align="left">Software Engineer</td>
 <td align="left">79340</td>
 <td align="left">103620</td>
@@ -839,13 +848,52 @@ $(document).ready(function () {
 <tr class="even">
 <td align="left">Software Engineers</td>
 <td align="left">Software Developers, Systems Software</td>
+<td align="left">15-1133</td>
 <td align="left">Software Engineer</td>
 <td align="left">85610</td>
 <td align="left">110000</td>
 <td align="left">139550</td>
 </tr>
+<tr class="odd">
+<td align="left">Librarian</td>
+<td align="left">Librarians</td>
+<td align="left">25-4021</td>
+<td align="left">NA</td>
+<td align="left">46130</td>
+<td align="left">59050</td>
+<td align="left">74740</td>
+</tr>
+<tr class="even">
+<td align="left">Librarian</td>
+<td align="left">Library Science Teachers, Postsecondary</td>
+<td align="left">25-1082</td>
+<td align="left">Librarian</td>
+<td align="left">56550</td>
+<td align="left">71560</td>
+<td align="left">90550</td>
+</tr>
+<tr class="odd">
+<td align="left">Librarian</td>
+<td align="left">Archivists</td>
+<td align="left">25-4011</td>
+<td align="left">Librarian</td>
+<td align="left">38090</td>
+<td align="left">52240</td>
+<td align="left">71250</td>
+</tr>
+<tr class="even">
+<td align="left">Librarian</td>
+<td align="left">File Clerks</td>
+<td align="left">43-4071</td>
+<td align="left">Librarian</td>
+<td align="left">25420</td>
+<td align="left">31700</td>
+<td align="left">39670</td>
+</tr>
 </tbody>
 </table>
+<pre class="r"><code>saveRDS(nlm.extract,file = file.path(outputs,&quot;nlm.extract.RDS&quot;))
+write.csv(nlm.extract,file=file.path(outputs,&quot;nlm.extract.csv&quot;))</code></pre>
 </div>
 </div>
 

@@ -35,19 +35,34 @@ Note that the path `interwrk` is transitory, and is only kept during processing.
 
  - Input data: O&ast;NET 
  - Output data: path `acquired'
+ - this part is only run on-demand (manually)
  
 ```{r download_onet,eval=FALSE,cache=TRUE}
 source(file.path(programs,"01_download_onet.R"),echo=TRUE)
 ```
+## Download SOC data
+We can download definitions from `r soc_definitions_loc`. In particular, we might be interested in the major groupings. (not done yet)
+
 
 ## Mapping job titles to SOC
-We also merge in BLS data on salaries.
+
+We merge the alternate titles (as defined by O&ast;Net) and the BLS data (merged in via occupational code).
+We keep all observations in our normative list of NLM-state related occupations.
+
 ```{r subselect_onet,eval=TRUE,cache=TRUE,echo=FALSE}
 source(file.path(programs,"02_subset_onet.R"),echo=TRUE)
 ```
 
-## Print out the table
+## Results
+
+The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries indicate that no occupation code could be found on O&ast;Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC).
+
 ```{r table1}
-kable(nlm.titles %>% select("Job Title","Title", "Alternate Title","A_PCT25","A_MEDIAN","A_PCT75"))
+nlm.extract <- nlm.titles %>% 
+  distinct(`Job Title`,SOC,.keep_all = TRUE) %>% 
+  select("Job Title","Title","SOC", "Alternate Title","A_PCT25","A_MEDIAN","A_PCT75")
+kable(nlm.extract)
+saveRDS(nlm.extract,file = file.path(outputs,"nlm.extract.RDS"))
+write.csv(nlm.extract,file=file.path(outputs,"nlm.extract.csv"))
 ```
 

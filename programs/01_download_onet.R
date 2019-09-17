@@ -1,4 +1,4 @@
-# Download ONET data
+# Download ONET and BLS OES data
 # Data is about 50MB - depending on your connection, this might take a while.
 
 source(file.path(rprojroot::find_rstudio_root_file(),"pathconfig.R"),echo=FALSE)
