@@ -12,7 +12,7 @@ Occupation_Data <- read_excel(file.path(acquired,"Occupation Data.xlsx")) %>% se
 # Possible merge in the Transition matrix, as a potential for alternate hires
 
 # Read BLS earnings data
-BLS.data <- read_excel(file.path(acquired,paste0("national_M",oes.src.version,"_dl.xlsx")))
+BLS.data <- read_excel(file.path(acquired,paste0("national_M20",oes.src.version,"_dl.xlsx")))
 
 # load the jobtitle data (our own list)
 job_titles <- read_excel(file.path(generated,"job_titles.xlsx"))
