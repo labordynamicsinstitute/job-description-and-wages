@@ -1,5 +1,5 @@
 ---
-title: "Programs"
+title: "Identifying salary ranges for certain jobs"
 author:
   '1':
     name: Lars Vilhuber
@@ -60,6 +60,7 @@ Note: we have added a few "alternate titles" where we believe that the O&ast;Net
 The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC). 
 
 ```{r table1}
+nlm.titles <- readRDS(file.path(outputs,"nlm.titles.RDS"))
 nlm.extract <- nlm.titles %>% 
   distinct(`Job Title`,SOC,.keep_all = TRUE) %>% 
   select("Job Title","Title","SOC", "Alternate Title","A_PCT25","A_MEDIAN","A_PCT75")
@@ -71,7 +72,8 @@ We collapse the raw data into the minimum "PCT25" number, the median "MEDIAN" nu
 
 ```{r table2}
 nlm.collapsed <- nlm.extract  %>% group_by(`Job Title`) %>%
-  summarise(PCT25 = min(A_PCT25),MEDIAN = median(A_MEDIAN),PCT75=max(A_PCT75))
+  summarise(PCT25 = min(as.numeric(A_PCT25)),MEDIAN = median(as.numeric(A_MEDIAN)),
+            PCT75=max(as.numeric(A_PCT75)))
 kable(nlm.collapsed)
 saveRDS(nlm.collapsed,file = file.path(outputs,"nlm.collapsed.RDS"))
 write.csv(nlm.collapsed,file=file.path(outputs,"nlm.collapsed.csv"))
@@ -79,14 +81,20 @@ write.csv(nlm.collapsed,file=file.path(outputs,"nlm.collapsed.csv"))
 
 ## Appendix
 
+### The full table (corresponds to Table x in report)
+
+```{r app_full,echo=FALSE}
+kable(job_titles.main)
+```
+
 ### The list of force-included occupations
 
-```{r app_inclusions,echo=TRUE}
+```{r app_inclusions,echo=FALSE}
 kable(job_titles.plus)
 ```
 
 ### The list of excluded occupations
 
-```{r app_exclusions,echo=TRUE}
+```{r app_exclusions,echo=FALSE}
 kable(job_titles.minus)
 ```
