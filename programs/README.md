@@ -227,6 +227,8 @@ We keep all observations in our normative list of NLM-state related occupations.
 ## > write.csv(nlm.titles, file = file.path(outputs, "nlm.titles.csv"))
 ```
 
+Note: we have added a few "alternate titles" where we believe that the O&ast;Net descriptions do not capture the right name, and we have explicitly removed a few SOC codes because we believe they do not apply in this context. These are listed in the Appendix.
+
 ## Results
 
 The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC). 
@@ -321,4 +323,35 @@ saveRDS(nlm.collapsed,file = file.path(outputs,"nlm.collapsed.RDS"))
 write.csv(nlm.collapsed,file=file.path(outputs,"nlm.collapsed.csv"))
 ```
 
+## Appendix
 
+### The list of force-included occupations
+
+
+```r
+kable(job_titles.plus)
+```
+
+
+
+Job Title   O*NET-SOC Code   SOC       Alternate Title 
+----------  ---------------  --------  ----------------
+Scientist   19-1041.00       19-1041   Epidemiologist  
+
+### The list of excluded occupations
+
+
+```r
+kable(job_titles.minus)
+```
+
+
+
+Job Title                                                              SOC     
+---------------------------------------------------------------------  --------
+Nuclear Engineers                                                      17-2161 
+Astronomers                                                            19-2011 
+Physicists                                                             19-2012 
+Architectural Drafters                                                 17-3011 
+File Clerks                                                            43-4071 
+First-Line Supervisors of Construction Trades and Extraction Workers   47-1011 

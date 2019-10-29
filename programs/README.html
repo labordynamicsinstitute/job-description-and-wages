@@ -512,6 +512,7 @@ summary {
 ## &gt; saveRDS(nlm.titles, file = file.path(outputs, &quot;nlm.titles.RDS&quot;))
 ## 
 ## &gt; write.csv(nlm.titles, file = file.path(outputs, &quot;nlm.titles.csv&quot;))</code></pre>
+<p>Note: we have added a few “alternate titles” where we believe that the O*Net descriptions do not capture the right name, and we have explicitly removed a few SOC codes because we believe they do not apply in this context. These are listed in the Appendix.</p>
 </div>
 <div id="results" class="section level2">
 <h2><span class="header-section-number">1.5</span> Results</h2>
@@ -1008,6 +1009,69 @@ kable(nlm.collapsed)</code></pre>
 </table>
 <pre class="r"><code>saveRDS(nlm.collapsed,file = file.path(outputs,&quot;nlm.collapsed.RDS&quot;))
 write.csv(nlm.collapsed,file=file.path(outputs,&quot;nlm.collapsed.csv&quot;))</code></pre>
+</div>
+<div id="appendix" class="section level2">
+<h2><span class="header-section-number">1.6</span> Appendix</h2>
+<div id="the-list-of-force-included-occupations" class="section level3">
+<h3><span class="header-section-number">1.6.1</span> The list of force-included occupations</h3>
+<pre class="r"><code>kable(job_titles.plus)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Job Title</th>
+<th align="left">O*NET-SOC Code</th>
+<th align="left">SOC</th>
+<th align="left">Alternate Title</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Scientist</td>
+<td align="left">19-1041.00</td>
+<td align="left">19-1041</td>
+<td align="left">Epidemiologist</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="the-list-of-excluded-occupations" class="section level3">
+<h3><span class="header-section-number">1.6.2</span> The list of excluded occupations</h3>
+<pre class="r"><code>kable(job_titles.minus)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Job Title</th>
+<th align="left">SOC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Nuclear Engineers</td>
+<td align="left">17-2161</td>
+</tr>
+<tr class="even">
+<td align="left">Astronomers</td>
+<td align="left">19-2011</td>
+</tr>
+<tr class="odd">
+<td align="left">Physicists</td>
+<td align="left">19-2012</td>
+</tr>
+<tr class="even">
+<td align="left">Architectural Drafters</td>
+<td align="left">17-3011</td>
+</tr>
+<tr class="odd">
+<td align="left">File Clerks</td>
+<td align="left">43-4071</td>
+</tr>
+<tr class="even">
+<td align="left">First-Line Supervisors of Construction Trades and Extraction Workers</td>
+<td align="left">47-1011</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 
