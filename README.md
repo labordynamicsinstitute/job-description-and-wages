@@ -4,7 +4,7 @@ We find SOC titles by "job titles" through ONET data. SOC is defined here: https
 
 ## Result
 
-See [programs/README](programs/README.md).
+See [programs/README](programs/README.md). Or see a prettier document at https://labordynamicsinstitute.github.io/job-description-and-wages/.
 
 ## Sources
 [![O&ast;NET](https://www.onetcenter.org/image/link/onet-in-it.svg)](https://www.onetcenter.org/database.html)
