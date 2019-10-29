@@ -7,10 +7,11 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
-<meta name="date" content="2019-09-17" />
+<meta name="date" content="2019-10-29" />
 
 <title>Programs</title>
 
@@ -255,9 +256,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -271,7 +270,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -282,22 +280,80 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -307,8 +363,8 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Programs</h1>
-<h4 class="author"><em>true</em></h4>
-<h4 class="date"><em>2019-09-17</em></h4>
+<h4 class="author">true</h4>
+<h4 class="date">2019-10-29</h4>
 
 </div>
 
@@ -345,14 +401,15 @@ $(document).ready(function () {
 ## +     echo = FALSE)</code></pre>
 <pre><code>## Loading required package: dplyr</code></pre>
 <pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
 ## 
 ##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
+<pre><code>## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre><code>## Loading required package: devtools</code></pre>
+<pre><code>## Loading required package: usethis</code></pre>
 <pre><code>## Loading required package: rprojroot</code></pre>
 <pre><code>## Loading required package: tictoc</code></pre>
 <pre><code>## 
@@ -371,7 +428,7 @@ $(document).ready(function () {
 ## 
 ## &gt; oes.src.base &lt;- &quot;https://www.bls.gov/oes/special.requests/&quot;
 ## 
-## &gt; oes.src.version &lt;- &quot;2018&quot;
+## &gt; oes.src.version &lt;- &quot;18&quot;
 ## 
 ## &gt; oes.src.file &lt;- paste(&quot;oesm&quot;, oes.src.version, &quot;nat.zip&quot;, 
 ## +     sep = &quot;&quot;)
@@ -407,14 +464,21 @@ $(document).ready(function () {
 ## &gt; Occupation_Data &lt;- read_excel(file.path(acquired, 
 ## +     &quot;Occupation Data.xlsx&quot;)) %&gt;% select(-Title)
 ## 
-## &gt; BLS.data &lt;- read_excel(file.path(acquired, paste0(&quot;national_M&quot;, 
+## &gt; BLS.data &lt;- read_excel(file.path(acquired, paste0(&quot;national_M20&quot;, 
 ## +     oes.src.version, &quot;_dl.xlsx&quot;)))
 ## 
-## &gt; job_titles &lt;- read_excel(file.path(generated, &quot;job_titles.xlsx&quot;))
+## &gt; job_titles &lt;- read_excel(file.path(generated, &quot;job_titles.xlsx&quot;), 
+## +     sheet = &quot;Main&quot;)
 ## 
 ## &gt; names(job_titles) &lt;- c(&quot;Job Title&quot;)
 ## 
-## &gt; job_titles[nrow(job_titles) + 1, ] &lt;- &quot;Librarian&quot;
+## &gt; job_titles.plus &lt;- read_excel(file.path(generated, 
+## +     &quot;job_titles.xlsx&quot;), sheet = &quot;Inclusions&quot;, col_names = TRUE) %&gt;% 
+## +     rename(`Job Title`  .... [TRUNCATED] 
+## 
+## &gt; job_titles.minus &lt;- read_excel(file.path(generated, 
+## +     &quot;job_titles.xlsx&quot;), sheet = &quot;Exclusions&quot;, col_names = TRUE) %&gt;% 
+## +     rename(`Job Title` .... [TRUNCATED] 
 ## 
 ## &gt; soc_job_titles &lt;- Alternate_Titles %&gt;% select(&quot;O*NET-SOC Code&quot;, 
 ## +     Title) %&gt;% distinct()
@@ -422,25 +486,36 @@ $(document).ready(function () {
 ## &gt; soc_job_alttitles &lt;- Alternate_Titles %&gt;% select(&quot;O*NET-SOC Code&quot;, 
 ## +     &quot;Alternate Title&quot;) %&gt;% distinct()
 ## 
+## &gt; soc_job_alttitles &lt;- bind_rows(soc_job_alttitles, 
+## +     job_titles.plus %&gt;% select(&quot;Alternate Title&quot;, &quot;O*NET-SOC Code&quot;))
+## 
 ## &gt; primary &lt;- stringdist_inner_join(y = soc_job_titles, 
 ## +     x = job_titles, by = c(`Job Title` = &quot;Title&quot;), method = &quot;jw&quot;, 
 ## +     distance_col = &quot;jw_ ...&quot; ... [TRUNCATED] 
 ## 
-## &gt; secondary &lt;- stringdist_inner_join(y = soc_job_alttitles, 
+## &gt; secondary.raw &lt;- stringdist_inner_join(y = soc_job_alttitles, 
 ## +     x = job_titles, by = c(`Job Title` = &quot;Alternate Title&quot;), 
-## +     method = &quot;jw&quot;, dist .... [TRUNCATED] 
+## +     method = &quot;jw&quot;,  .... [TRUNCATED] 
 ## 
-## &gt; nlm.titles &lt;- bind_rows(primary, secondary) %&gt;% left_join(Occupation_Data, 
-## +     by = &quot;O*NET-SOC Code&quot;) %&gt;% separate(&quot;O*NET-SOC Code&quot;, sep = 7, 
-## +  .... [TRUNCATED] 
+## &gt; secondary &lt;- secondary.raw %&gt;% left_join(job_titles.plus %&gt;% 
+## +     select(-&quot;O*NET-SOC Code&quot;), by = c(&quot;Alternate Title&quot;)) %&gt;% 
+## +     mutate(`Job Tit .... [TRUNCATED] 
 ## 
+## &gt; nlm.titles.raw &lt;- bind_rows(primary, secondary) %&gt;% 
+## +     left_join(Occupation_Data, by = &quot;O*NET-SOC Code&quot;) %&gt;% separate(&quot;O*NET-SOC Code&quot;, 
+## +     s .... [TRUNCATED] 
+## 
+## &gt; nlm.titles &lt;- anti_join(nlm.titles.raw, job_titles.minus %&gt;% 
+## +     select(SOC))</code></pre>
+<pre><code>## Joining, by = &quot;SOC&quot;</code></pre>
+<pre><code>## 
 ## &gt; saveRDS(nlm.titles, file = file.path(outputs, &quot;nlm.titles.RDS&quot;))
 ## 
 ## &gt; write.csv(nlm.titles, file = file.path(outputs, &quot;nlm.titles.csv&quot;))</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2><span class="header-section-number">1.5</span> Results</h2>
-<p>The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries indicate that no occupation code could be found on O*Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC).</p>
+<p>The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries (“NA”) indicate that no occupation code could be found on O*Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC).</p>
 <pre class="r"><code>nlm.extract &lt;- nlm.titles %&gt;% 
   distinct(`Job Title`,SOC,.keep_all = TRUE) %&gt;% 
   select(&quot;Job Title&quot;,&quot;Title&quot;,&quot;SOC&quot;, &quot;Alternate Title&quot;,&quot;A_PCT25&quot;,&quot;A_MEDIAN&quot;,&quot;A_PCT75&quot;)
@@ -532,15 +607,6 @@ kable(nlm.extract)</code></pre>
 </tr>
 <tr class="odd">
 <td align="left">Scientists</td>
-<td align="left">Nuclear Engineers</td>
-<td align="left">17-2161</td>
-<td align="left">Scientist</td>
-<td align="left">85840</td>
-<td align="left">107600</td>
-<td align="left">129000</td>
-</tr>
-<tr class="even">
-<td align="left">Scientists</td>
 <td align="left">Nanosystems Engineers</td>
 <td align="left">17-2199</td>
 <td align="left">Scientist</td>
@@ -548,7 +614,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">96980</td>
 <td align="left">126200</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Manufacturing Engineering Technologists</td>
 <td align="left">17-3029</td>
@@ -557,7 +623,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">63200</td>
 <td align="left">80670</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Biologists</td>
 <td align="left">19-1020</td>
@@ -566,7 +632,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">77550</td>
 <td align="left">103540</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Biochemists and Biophysicists</td>
 <td align="left">19-1021</td>
@@ -575,7 +641,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">93280</td>
 <td align="left">129950</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Bioinformatics Scientists</td>
 <td align="left">19-1029</td>
@@ -584,7 +650,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">79590</td>
 <td align="left">98040</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Medical Scientists, Except Epidemiologists</td>
 <td align="left">19-1042</td>
@@ -593,25 +659,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">84810</td>
 <td align="left">118040</td>
 </tr>
-<tr class="even">
-<td align="left">Scientists</td>
-<td align="left">Astronomers</td>
-<td align="left">19-2011</td>
-<td align="left">Scientist</td>
-<td align="left">74300</td>
-<td align="left">105680</td>
-<td align="left">147710</td>
-</tr>
 <tr class="odd">
-<td align="left">Scientists</td>
-<td align="left">Physicists</td>
-<td align="left">19-2012</td>
-<td align="left">Scientist</td>
-<td align="left">85090</td>
-<td align="left">120950</td>
-<td align="left">158350</td>
-</tr>
-<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Chemists</td>
 <td align="left">19-2031</td>
@@ -620,7 +668,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">76890</td>
 <td align="left">103820</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Climate Change Analysts</td>
 <td align="left">19-2041</td>
@@ -629,7 +677,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">71130</td>
 <td align="left">94590</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Hydrologists</td>
 <td align="left">19-2043</td>
@@ -638,7 +686,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">79370</td>
 <td align="left">100090</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Remote Sensing Scientists and Technologists</td>
 <td align="left">19-2099</td>
@@ -647,7 +695,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">107230</td>
 <td align="left">136930</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Scientists</td>
 <td align="left">Anthropologists</td>
 <td align="left">19-3091</td>
@@ -656,7 +704,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">62410</td>
 <td align="left">80230</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Scientists</td>
 <td align="left">Geographers</td>
 <td align="left">19-3092</td>
@@ -665,7 +713,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">80300</td>
 <td align="left">96980</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Policy Specialists</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
@@ -674,7 +722,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Construction Managers</td>
 <td align="left">11-9021</td>
@@ -683,7 +731,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">93370</td>
 <td align="left">123720</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Architectural and Engineering Managers</td>
 <td align="left">11-9041</td>
@@ -692,7 +740,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">140760</td>
 <td align="left">173180</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Managers, All Other</td>
 <td align="left">11-9199</td>
@@ -701,7 +749,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">107480</td>
 <td align="left">143230</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Information Technology Project Managers</td>
 <td align="left">15-1199</td>
@@ -710,7 +758,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">90270</td>
 <td align="left">117070</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Project Managers</td>
 <td align="left">Environmental Engineers</td>
 <td align="left">17-2081</td>
@@ -719,7 +767,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">87620</td>
 <td align="left">112230</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Project Managers</td>
 <td align="left">Wind Energy Engineers</td>
 <td align="left">17-2199</td>
@@ -727,15 +775,6 @@ kable(nlm.extract)</code></pre>
 <td align="left">69890</td>
 <td align="left">96980</td>
 <td align="left">126200</td>
-</tr>
-<tr class="odd">
-<td align="left">Project Managers</td>
-<td align="left">Architectural Drafters</td>
-<td align="left">17-3011</td>
-<td align="left">Project Manager</td>
-<td align="left">43660</td>
-<td align="left">54920</td>
-<td align="left">67120</td>
 </tr>
 <tr class="even">
 <td align="left">Project Managers</td>
@@ -783,15 +822,6 @@ kable(nlm.extract)</code></pre>
 <td align="left">107000</td>
 </tr>
 <tr class="odd">
-<td align="left">Project Managers</td>
-<td align="left">First-Line Supervisors of Construction Trades and Extraction Workers</td>
-<td align="left">47-1011</td>
-<td align="left">Project Manager</td>
-<td align="left">52380</td>
-<td align="left">65230</td>
-<td align="left">84240</td>
-</tr>
-<tr class="even">
 <td align="left">Researchers</td>
 <td align="left">Industrial Ecologists</td>
 <td align="left">19-2041</td>
@@ -800,7 +830,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">71130</td>
 <td align="left">94590</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Researchers</td>
 <td align="left">Anthropologists</td>
 <td align="left">19-3091</td>
@@ -809,7 +839,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">62410</td>
 <td align="left">80230</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Researchers</td>
 <td align="left">Historians</td>
 <td align="left">19-3093</td>
@@ -818,7 +848,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">61140</td>
 <td align="left">85700</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Senior Staffs</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
@@ -827,7 +857,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Software Engineers</td>
 <td align="left">Computer and Information Research Scientists</td>
 <td align="left">15-1111</td>
@@ -836,7 +866,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">118370</td>
 <td align="left">149470</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Software Engineers</td>
 <td align="left">Software Developers, Applications</td>
 <td align="left">15-1132</td>
@@ -845,7 +875,7 @@ kable(nlm.extract)</code></pre>
 <td align="left">103620</td>
 <td align="left">130460</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Software Engineers</td>
 <td align="left">Software Developers, Systems Software</td>
 <td align="left">15-1133</td>
@@ -853,6 +883,15 @@ kable(nlm.extract)</code></pre>
 <td align="left">85610</td>
 <td align="left">110000</td>
 <td align="left">139550</td>
+</tr>
+<tr class="even">
+<td align="left">Data Scientists</td>
+<td align="left">Computer and Information Research Scientists</td>
+<td align="left">15-1111</td>
+<td align="left">Data Scientist</td>
+<td align="left">91650</td>
+<td align="left">118370</td>
+<td align="left">149470</td>
 </tr>
 <tr class="odd">
 <td align="left">Librarian</td>
@@ -881,19 +920,94 @@ kable(nlm.extract)</code></pre>
 <td align="left">52240</td>
 <td align="left">71250</td>
 </tr>
-<tr class="even">
-<td align="left">Librarian</td>
-<td align="left">File Clerks</td>
-<td align="left">43-4071</td>
-<td align="left">Librarian</td>
-<td align="left">25420</td>
-<td align="left">31700</td>
-<td align="left">39670</td>
-</tr>
 </tbody>
 </table>
 <pre class="r"><code>saveRDS(nlm.extract,file = file.path(outputs,&quot;nlm.extract.RDS&quot;))
 write.csv(nlm.extract,file=file.path(outputs,&quot;nlm.extract.csv&quot;))</code></pre>
+<p>We collapse the raw data into the minimum “PCT25” number, the median “MEDIAN” number, and the maximum “PCT75” number to get a range:</p>
+<pre class="r"><code>nlm.collapsed &lt;- nlm.extract  %&gt;% group_by(`Job Title`) %&gt;%
+  summarise(PCT25 = min(A_PCT25),MEDIAN = median(A_MEDIAN),PCT75=max(A_PCT75))
+kable(nlm.collapsed)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Job Title</th>
+<th align="left">PCT25</th>
+<th align="left">MEDIAN</th>
+<th align="left">PCT75</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Archivists</td>
+<td align="left">38090</td>
+<td align="left">52240</td>
+<td align="left">71250</td>
+</tr>
+<tr class="even">
+<td align="left">Curators</td>
+<td align="left">38090</td>
+<td align="left">53780</td>
+<td align="left">80230</td>
+</tr>
+<tr class="odd">
+<td align="left">Data Librarians</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Data Scientists</td>
+<td align="left">91650</td>
+<td align="left">118370</td>
+<td align="left">149470</td>
+</tr>
+<tr class="odd">
+<td align="left">Librarian</td>
+<td align="left">38090</td>
+<td align="left">59050</td>
+<td align="left">90550</td>
+</tr>
+<tr class="even">
+<td align="left">Policy Specialists</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Project Managers</td>
+<td align="left">112400</td>
+<td align="left">71680</td>
+<td align="left">94590</td>
+</tr>
+<tr class="even">
+<td align="left">Researchers</td>
+<td align="left">40670</td>
+<td align="left">62410</td>
+<td align="left">94590</td>
+</tr>
+<tr class="odd">
+<td align="left">Scientists</td>
+<td align="left">112400</td>
+<td align="left">76890</td>
+<td align="left">98040</td>
+</tr>
+<tr class="even">
+<td align="left">Senior Staffs</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Software Engineers</td>
+<td align="left">79340</td>
+<td align="left">110000</td>
+<td align="left">149470</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>saveRDS(nlm.collapsed,file = file.path(outputs,&quot;nlm.collapsed.RDS&quot;))
+write.csv(nlm.collapsed,file=file.path(outputs,&quot;nlm.collapsed.csv&quot;))</code></pre>
 </div>
 </div>
 
@@ -914,6 +1028,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

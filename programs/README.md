@@ -3,7 +3,7 @@ title: "Programs"
 author:
   '1':
     name: Lars Vilhuber
-date: "2019-09-17"
+date: "2019-10-29"
 output:
   html_document:
     keep_md: yes
@@ -82,6 +82,10 @@ source(file.path(programs,"config.R"), echo=TRUE)
 ```
 
 ```
+## Loading required package: usethis
+```
+
+```
 ## Loading required package: rprojroot
 ```
 
@@ -121,7 +125,7 @@ source(file.path(programs,"config.R"), echo=TRUE)
 ## 
 ## > oes.src.base <- "https://www.bls.gov/oes/special.requests/"
 ## 
-## > oes.src.version <- "2018"
+## > oes.src.version <- "18"
 ## 
 ## > oes.src.file <- paste("oesm", oes.src.version, "nat.zip", 
 ## +     sep = "")
@@ -167,14 +171,21 @@ We keep all observations in our normative list of NLM-state related occupations.
 ## > Occupation_Data <- read_excel(file.path(acquired, 
 ## +     "Occupation Data.xlsx")) %>% select(-Title)
 ## 
-## > BLS.data <- read_excel(file.path(acquired, paste0("national_M", 
+## > BLS.data <- read_excel(file.path(acquired, paste0("national_M20", 
 ## +     oes.src.version, "_dl.xlsx")))
 ## 
-## > job_titles <- read_excel(file.path(generated, "job_titles.xlsx"))
+## > job_titles <- read_excel(file.path(generated, "job_titles.xlsx"), 
+## +     sheet = "Main")
 ## 
 ## > names(job_titles) <- c("Job Title")
 ## 
-## > job_titles[nrow(job_titles) + 1, ] <- "Librarian"
+## > job_titles.plus <- read_excel(file.path(generated, 
+## +     "job_titles.xlsx"), sheet = "Inclusions", col_names = TRUE) %>% 
+## +     rename(`Job Title`  .... [TRUNCATED] 
+## 
+## > job_titles.minus <- read_excel(file.path(generated, 
+## +     "job_titles.xlsx"), sheet = "Exclusions", col_names = TRUE) %>% 
+## +     rename(`Job Title` .... [TRUNCATED] 
 ## 
 ## > soc_job_titles <- Alternate_Titles %>% select("O*NET-SOC Code", 
 ## +     Title) %>% distinct()
@@ -182,17 +193,34 @@ We keep all observations in our normative list of NLM-state related occupations.
 ## > soc_job_alttitles <- Alternate_Titles %>% select("O*NET-SOC Code", 
 ## +     "Alternate Title") %>% distinct()
 ## 
+## > soc_job_alttitles <- bind_rows(soc_job_alttitles, 
+## +     job_titles.plus %>% select("Alternate Title", "O*NET-SOC Code"))
+## 
 ## > primary <- stringdist_inner_join(y = soc_job_titles, 
 ## +     x = job_titles, by = c(`Job Title` = "Title"), method = "jw", 
 ## +     distance_col = "jw_ ..." ... [TRUNCATED] 
 ## 
-## > secondary <- stringdist_inner_join(y = soc_job_alttitles, 
+## > secondary.raw <- stringdist_inner_join(y = soc_job_alttitles, 
 ## +     x = job_titles, by = c(`Job Title` = "Alternate Title"), 
-## +     method = "jw", dist .... [TRUNCATED] 
+## +     method = "jw",  .... [TRUNCATED] 
 ## 
-## > nlm.titles <- bind_rows(primary, secondary) %>% left_join(Occupation_Data, 
-## +     by = "O*NET-SOC Code") %>% separate("O*NET-SOC Code", sep = 7, 
-## +  .... [TRUNCATED] 
+## > secondary <- secondary.raw %>% left_join(job_titles.plus %>% 
+## +     select(-"O*NET-SOC Code"), by = c("Alternate Title")) %>% 
+## +     mutate(`Job Tit .... [TRUNCATED] 
+## 
+## > nlm.titles.raw <- bind_rows(primary, secondary) %>% 
+## +     left_join(Occupation_Data, by = "O*NET-SOC Code") %>% separate("O*NET-SOC Code", 
+## +     s .... [TRUNCATED] 
+## 
+## > nlm.titles <- anti_join(nlm.titles.raw, job_titles.minus %>% 
+## +     select(SOC))
+```
+
+```
+## Joining, by = "SOC"
+```
+
+```
 ## 
 ## > saveRDS(nlm.titles, file = file.path(outputs, "nlm.titles.RDS"))
 ## 
@@ -201,7 +229,7 @@ We keep all observations in our normative list of NLM-state related occupations.
 
 ## Results
 
-The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries indicate that no occupation code could be found on O&ast;Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC).
+The following table lists the annual salaries by job title (median, and the 25% and 75% percentile). Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. We only print one line per normative job title - these might map to the same occupation code (SOC). 
 
 
 ```r
@@ -213,59 +241,84 @@ kable(nlm.extract)
 
 
 
-Job Title            Title                                                                  SOC       Alternate Title     A_PCT25   A_MEDIAN   A_PCT75 
--------------------  ---------------------------------------------------------------------  --------  ------------------  --------  ---------  --------
-Archivists           Archivists                                                             25-4011   NA                  38090     52240      71250   
-Curators             Curators                                                               25-4012   NA                  39580     53780      72830   
-Curators             Archeologists                                                          19-3091   Curator             48020     62410      80230   
-Curators             Archivists                                                             25-4011   Curator             38090     52240      71250   
-Data Librarians      NA                                                                     NA        NA                  NA        NA         NA      
-Scientists           Biofuels/Biodiesel Technology and Product Development Managers         11-9041   Scientist           112400    140760     173180  
-Scientists           Mathematicians                                                         15-2021   Scientist           73490     101900     126070  
-Scientists           Chemical Engineers                                                     17-2041   Scientist           81900     104910     133320  
-Scientists           Nuclear Engineers                                                      17-2161   Scientist           85840     107600     129000  
-Scientists           Nanosystems Engineers                                                  17-2199   Scientist           69890     96980      126200  
-Scientists           Manufacturing Engineering Technologists                                17-3029   Scientist           47500     63200      80670   
-Scientists           Biologists                                                             19-1020   Scientist           56730     77550      103540  
-Scientists           Biochemists and Biophysicists                                          19-1021   Scientist           64230     93280      129950  
-Scientists           Bioinformatics Scientists                                              19-1029   Scientist           60250     79590      98040   
-Scientists           Medical Scientists, Except Epidemiologists                             19-1042   Scientist           59580     84810      118040  
-Scientists           Astronomers                                                            19-2011   Scientist           74300     105680     147710  
-Scientists           Physicists                                                             19-2012   Scientist           85090     120950     158350  
-Scientists           Chemists                                                               19-2031   Scientist           56290     76890      103820  
-Scientists           Climate Change Analysts                                                19-2041   Scientist           53580     71130      94590   
-Scientists           Hydrologists                                                           19-2043   Scientist           61280     79370      100090  
-Scientists           Remote Sensing Scientists and Technologists                            19-2099   Scientist           75830     107230     136930  
-Scientists           Anthropologists                                                        19-3091   Scientist           48020     62410      80230   
-Scientists           Geographers                                                            19-3092   Scientist           63270     80300      96980   
-Policy Specialists   NA                                                                     NA        NA                  NA        NA         NA      
-Project Managers     Construction Managers                                                  11-9021   Project Manager     70670     93370      123720  
-Project Managers     Architectural and Engineering Managers                                 11-9041   Project Manager     112400    140760     173180  
-Project Managers     Managers, All Other                                                    11-9199   Project Manager     75460     107480     143230  
-Project Managers     Information Technology Project Managers                                15-1199   Project Manager     66410     90270      117070  
-Project Managers     Environmental Engineers                                                17-2081   Project Manager     66590     87620      112230  
-Project Managers     Wind Energy Engineers                                                  17-2199   Project Manager     69890     96980      126200  
-Project Managers     Architectural Drafters                                                 17-3011   Project Manager     43660     54920      67120   
-Project Managers     Environmental Restoration Planners                                     19-2041   Project Manager     53580     71130      94590   
-Project Managers     Social Science Research Assistants                                     19-4061   Project Manager     35450     46640      60830   
-Project Managers     Remote Sensing Technicians                                             19-4099   Project Manager     37940     49670      63340   
-Project Managers     Technical Directors/Managers                                           27-2012   Project Manager     48520     71680      110350  
-Project Managers     Intelligence Analysts                                                  33-3021   Project Manager     57560     81920      107000  
-Project Managers     First-Line Supervisors of Construction Trades and Extraction Workers   47-1011   Project Manager     52380     65230      84240   
-Researchers          Industrial Ecologists                                                  19-2041   Researcher          53580     71130      94590   
-Researchers          Anthropologists                                                        19-3091   Researcher          48020     62410      80230   
-Researchers          Historians                                                             19-3093   Researcher          40670     61140      85700   
-Senior Staffs        NA                                                                     NA        NA                  NA        NA         NA      
-Software Engineers   Computer and Information Research Scientists                           15-1111   Software Engineer   91650     118370     149470  
-Software Engineers   Software Developers, Applications                                      15-1132   Software Engineer   79340     103620     130460  
-Software Engineers   Software Developers, Systems Software                                  15-1133   Software Engineer   85610     110000     139550  
-Librarian            Librarians                                                             25-4021   NA                  46130     59050      74740   
-Librarian            Library Science Teachers, Postsecondary                                25-1082   Librarian           56550     71560      90550   
-Librarian            Archivists                                                             25-4011   Librarian           38090     52240      71250   
-Librarian            File Clerks                                                            43-4071   Librarian           25420     31700      39670   
+Job Title            Title                                                            SOC       Alternate Title     A_PCT25   A_MEDIAN   A_PCT75 
+-------------------  ---------------------------------------------------------------  --------  ------------------  --------  ---------  --------
+Archivists           Archivists                                                       25-4011   NA                  38090     52240      71250   
+Curators             Curators                                                         25-4012   NA                  39580     53780      72830   
+Curators             Archeologists                                                    19-3091   Curator             48020     62410      80230   
+Curators             Archivists                                                       25-4011   Curator             38090     52240      71250   
+Data Librarians      NA                                                               NA        NA                  NA        NA         NA      
+Scientists           Biofuels/Biodiesel Technology and Product Development Managers   11-9041   Scientist           112400    140760     173180  
+Scientists           Mathematicians                                                   15-2021   Scientist           73490     101900     126070  
+Scientists           Chemical Engineers                                               17-2041   Scientist           81900     104910     133320  
+Scientists           Nanosystems Engineers                                            17-2199   Scientist           69890     96980      126200  
+Scientists           Manufacturing Engineering Technologists                          17-3029   Scientist           47500     63200      80670   
+Scientists           Biologists                                                       19-1020   Scientist           56730     77550      103540  
+Scientists           Biochemists and Biophysicists                                    19-1021   Scientist           64230     93280      129950  
+Scientists           Bioinformatics Scientists                                        19-1029   Scientist           60250     79590      98040   
+Scientists           Medical Scientists, Except Epidemiologists                       19-1042   Scientist           59580     84810      118040  
+Scientists           Chemists                                                         19-2031   Scientist           56290     76890      103820  
+Scientists           Climate Change Analysts                                          19-2041   Scientist           53580     71130      94590   
+Scientists           Hydrologists                                                     19-2043   Scientist           61280     79370      100090  
+Scientists           Remote Sensing Scientists and Technologists                      19-2099   Scientist           75830     107230     136930  
+Scientists           Anthropologists                                                  19-3091   Scientist           48020     62410      80230   
+Scientists           Geographers                                                      19-3092   Scientist           63270     80300      96980   
+Policy Specialists   NA                                                               NA        NA                  NA        NA         NA      
+Project Managers     Construction Managers                                            11-9021   Project Manager     70670     93370      123720  
+Project Managers     Architectural and Engineering Managers                           11-9041   Project Manager     112400    140760     173180  
+Project Managers     Managers, All Other                                              11-9199   Project Manager     75460     107480     143230  
+Project Managers     Information Technology Project Managers                          15-1199   Project Manager     66410     90270      117070  
+Project Managers     Environmental Engineers                                          17-2081   Project Manager     66590     87620      112230  
+Project Managers     Wind Energy Engineers                                            17-2199   Project Manager     69890     96980      126200  
+Project Managers     Environmental Restoration Planners                               19-2041   Project Manager     53580     71130      94590   
+Project Managers     Social Science Research Assistants                               19-4061   Project Manager     35450     46640      60830   
+Project Managers     Remote Sensing Technicians                                       19-4099   Project Manager     37940     49670      63340   
+Project Managers     Technical Directors/Managers                                     27-2012   Project Manager     48520     71680      110350  
+Project Managers     Intelligence Analysts                                            33-3021   Project Manager     57560     81920      107000  
+Researchers          Industrial Ecologists                                            19-2041   Researcher          53580     71130      94590   
+Researchers          Anthropologists                                                  19-3091   Researcher          48020     62410      80230   
+Researchers          Historians                                                       19-3093   Researcher          40670     61140      85700   
+Senior Staffs        NA                                                               NA        NA                  NA        NA         NA      
+Software Engineers   Computer and Information Research Scientists                     15-1111   Software Engineer   91650     118370     149470  
+Software Engineers   Software Developers, Applications                                15-1132   Software Engineer   79340     103620     130460  
+Software Engineers   Software Developers, Systems Software                            15-1133   Software Engineer   85610     110000     139550  
+Data Scientists      Computer and Information Research Scientists                     15-1111   Data Scientist      91650     118370     149470  
+Librarian            Librarians                                                       25-4021   NA                  46130     59050      74740   
+Librarian            Library Science Teachers, Postsecondary                          25-1082   Librarian           56550     71560      90550   
+Librarian            Archivists                                                       25-4011   Librarian           38090     52240      71250   
 
 ```r
 saveRDS(nlm.extract,file = file.path(outputs,"nlm.extract.RDS"))
 write.csv(nlm.extract,file=file.path(outputs,"nlm.extract.csv"))
 ```
+We collapse the raw data into the minimum "PCT25" number, the median "MEDIAN" number, and the maximum "PCT75" number to get a range:
+
+
+```r
+nlm.collapsed <- nlm.extract  %>% group_by(`Job Title`) %>%
+  summarise(PCT25 = min(A_PCT25),MEDIAN = median(A_MEDIAN),PCT75=max(A_PCT75))
+kable(nlm.collapsed)
+```
+
+
+
+Job Title            PCT25    MEDIAN   PCT75  
+-------------------  -------  -------  -------
+Archivists           38090    52240    71250  
+Curators             38090    53780    80230  
+Data Librarians      NA       NA       NA     
+Data Scientists      91650    118370   149470 
+Librarian            38090    59050    90550  
+Policy Specialists   NA       NA       NA     
+Project Managers     112400   71680    94590  
+Researchers          40670    62410    94590  
+Scientists           112400   76890    98040  
+Senior Staffs        NA       NA       NA     
+Software Engineers   79340    110000   149470 
+
+```r
+saveRDS(nlm.collapsed,file = file.path(outputs,"nlm.collapsed.RDS"))
+write.csv(nlm.collapsed,file=file.path(outputs,"nlm.collapsed.csv"))
+```
+
 
