@@ -5,10 +5,10 @@ author:
     name: Lars Vilhuber
 date: "`r Sys.Date()`"
 output:
+  pdf_document: default
   html_document:
     keep_md: yes
     number_sections: yes
-  pdf_document: default
 editor_options:
   chunk_output_type: console
 ---
@@ -72,12 +72,32 @@ We collapse the raw data into the minimum "PCT25" number, the median "MEDIAN" nu
 
 ```{r table2}
 nlm.collapsed <- nlm.extract  %>% group_by(`Job Title`) %>%
-  summarise(PCT25 = min(as.numeric(A_PCT25)),MEDIAN = median(as.numeric(A_MEDIAN)),
-            PCT75=max(as.numeric(A_PCT75)))
+  summarise(PCT25 = min(as.numeric(A_PCT25),na.rm = TRUE),
+            MEDIAN = median(as.numeric(A_MEDIAN),na.rm = TRUE),
+            PCT75=max(as.numeric(A_PCT75),na.rm = TRUE)
+            )
 kable(nlm.collapsed)
 saveRDS(nlm.collapsed,file = file.path(outputs,"nlm.collapsed.RDS"))
 write.csv(nlm.collapsed,file=file.path(outputs,"nlm.collapsed.csv"))
 ```
+
+We crosscheck that the categories are right, by looking at the median median in each category:
+```{r table3}
+nlm.categories <- nlm.titles %>% 
+  distinct(`Job Title`,SOC,.keep_all = TRUE) %>% 
+  group_by(`Relative Salary`) %>%
+  mutate(Missing=is.na(A_MEDIAN)) %>%
+  summarise(PCT25 = min(as.numeric(A_PCT25),na.rm = TRUE),
+            MEDIAN = median(as.numeric(A_MEDIAN),na.rm = TRUE),
+            PCT75=max(as.numeric(A_PCT75),na.rm = TRUE),
+            N=n(),Missing=sum(Missing)) %>%
+  arrange(MEDIAN)
+kable(nlm.categories)
+saveRDS(nlm.categories,file = file.path(outputs,"nlm.categories.RDS"))
+write.csv(nlm.extract,file=file.path(outputs,"nlm.categories.csv"))
+
+```
+
 
 ## Appendix
 

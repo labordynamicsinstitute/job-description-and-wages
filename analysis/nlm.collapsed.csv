@@ -1,12 +1,22 @@
 "","Job Title","PCT25","MEDIAN","PCT75"
-"1","Archivists","38090","52240","71250"
-"2","Curators","38090","53780","80230"
-"3","Data Librarians",NA,NA,NA
-"4","Data Scientists","91650","118370","149470"
-"5","Librarian","38090","59050","90550"
-"6","Policy Specialists",NA,NA,NA
-"7","Project Managers","112400","71680","94590"
-"8","Researchers","40670","62410","94590"
-"9","Scientists","112400","76890","98040"
-"10","Senior Staffs",NA,NA,NA
-"11","Software Engineers","79340","110000","149470"
+"1","Administrative Staff",28930,37800,94890
+"2","Communication Specialist",44490,60000,81550
+"3","Curator",38090,53780,80230
+"4","Data Librarian",38090,59050,90550
+"5","Data Scientist",91650,118370,149470
+"6","Data Wrangler",66410,90270,117070
+"7","Education Specialist",39800,60600,82860
+"8","Facilities Manager",29560,58340,157120
+"9","Informatician",66410,89505,117070
+"10","IT Project Manager",66410,116400,180190
+"11","IT Security Specialist",52200,70530,94890
+"12","IT Systems Engineer",66410,116400,180190
+"13","Metadata Librarian",38090,59050,90550
+"14","Policy Specialist",Inf,NA,-Inf
+"15","Project Manager",35450,87620,173180
+"16","Records Management Specialist",38090,59050,90550
+"17","Research Domain Curator",47500,80300,173180
+"18","Research Domain Project Manager",47500,80300,173180
+"19","Researcher",40670,79945,173180
+"20","Senior Staff",Inf,NA,-Inf
+"21","Software Engineer",79340,110000,149470
