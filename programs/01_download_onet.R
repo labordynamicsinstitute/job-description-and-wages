@@ -12,7 +12,7 @@ unzip(file.path(acquired,onet.src.file),file.path("db_23_2_excel","Alternate Tit
 # download bls OES data
 download.file(paste0(oes.src.base,oes.src.file),destfile = file.path(acquired,oes.src.file))
 unzip(file.path(acquired,oes.src.file),
-      file.path(paste0("oesm",oes.src.version,"nat"),paste0("national_M",oes.src.version,"_dl.xlsx")),
+      file.path(paste0("oesm",oes.src.version,"nat"),paste0("national_M20",oes.src.version,"_dl.xlsx")),
       junkpaths = TRUE,exdir = acquired)
 
 
