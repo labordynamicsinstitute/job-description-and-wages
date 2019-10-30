@@ -23,6 +23,8 @@ This directory contains all programs necessary to run the cleaning, analysis, et
 Most parameters are set in the `config.R`:
 ```{r setup_config}
 source(file.path(rprojroot::find_rstudio_root_file(),"pathconfig.R"),echo=TRUE)
+source(file.path(programs,"global-libraries.R"),echo=FALSE)
+source(file.path(programs,"libraries.R"), echo=FALSE)
 source(file.path(programs,"config.R"), echo=TRUE)
 ```
 

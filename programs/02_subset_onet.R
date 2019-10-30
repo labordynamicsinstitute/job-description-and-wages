@@ -2,6 +2,8 @@
 # 
 
 source(file.path(rprojroot::find_rstudio_root_file(),"pathconfig.R"),echo=FALSE)
+source(file.path(programs,"global-libraries.R"),echo=FALSE)
+source(file.path(programs,"libraries.R"), echo=FALSE)
 source(file.path(programs,"config.R"), echo=FALSE)
 
 # ========= load onet data ============
@@ -46,14 +48,14 @@ primary <- stringdist_inner_join(y=soc_job_titles,
                                  by = c("Job Title" = "Title"),
                                  method="jw",
                                  distance_col="jw_distance",
-                                 max_dist=0.05) %>% 
+                                 max_dist=jw.max) %>% 
             mutate(Alternate = "0")
 secondary.raw <- stringdist_inner_join(y=soc_job_alttitles,
                                    x=job_titles %>% select("Job Title"),
                                    by = c("Job Title" = "Alternate Title"),
                                    method="jw",
                                    distance_col="jw_distance",
-                                   max_dist=0.05) %>%
+                                   max_dist=jw.max) %>%
               left_join(soc_job_titles,by="O*NET-SOC Code")%>% 
               mutate(Alternate = "1") 
 

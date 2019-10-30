@@ -1,0 +1,100 @@
+---
+title: 'Appendix: Identifying salary ranges for jobs relevant to the data cycle'
+author: "Lars Vilhuber"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    keep_md: yes
+    number_sections: yes
+  pdf_document:
+    number_section: yes
+  word_document: default
+editor_options:
+  chunk_output_type: console
+bibliography: oes.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,include=FALSE)
+
+source(file.path(rprojroot::find_rstudio_root_file(),"pathconfig.R"),echo=TRUE)
+source(file.path(programs,"global-libraries.R"),echo=FALSE)
+source(file.path(text,"libraries.R"), echo=FALSE)
+source(file.path(programs,"config.R"), echo=TRUE)
+```
+
+```{r prepare_range}
+
+nlm.categories <- readRDS(file.path(outputs,"nlm.categories.RDS")) %>%
+  arrange(MEDIAN)
+
+salary.range.min <- nlm.categories$`Relative Salary`[1]
+salary.range.max <- nlm.categories$`Relative Salary`[nrow(nlm.categories)]
+
+# read metadata
+metadata <- readRDS(file.path(acquired,"metadata.Rds"))
+```
+
+In the main text, we identify certain job descriptions, with associated salary ranges, from `r salary.range.min` (lowest) to `r salary.range.max` (highest). This appendix identifies possible job titles and associated salary ranges observed in workplace and occupational surveys conducted by the Bureau of Labor Statistics [@blsoesdata]. 
+
+
+# Data used
+
+## Occupational Employment Statistics
+
+Collection methods, estimation methodology, and coverage are described in @blsoesmethods. We downloaded the data from `r paste0(oes.src.base,oes.src.file)` on `r metadata$Date[2]`. From the downloaded data, we used ``r oes.internal.file``.
+
+## Occupational Information Network (O&ast;NET)
+
+
+The Occupational Information Network (O*NET) database comprises worker attributes and job characteristics.  Information is collected using a two-stage design in which:
+
+- a statistically random sample of businesses expected to employ workers in the targeted occupations is  identified and
+- a random sample of workers in those occupations within those businesses are  selected. Data is  collected by surveying job incumbents using a randomly assigned standardized questionnaire on occupation characteristics, out of three questionnaires. Additional questions cover tasks and demographic information.
+-  Abilities and Skills information is developed by occupational analysts using the updated information from incumbent workers [@onetdescription]. 
+
+The resulting data covers several thousand occupations. A data dictionary [@onetdictionary] provides additional information.
+
+We downloaded version `r onet.src.version` of the data [@onetdata] from `r paste0(onet.src.base,onet.src.file)` on `r metadata$Date[1]`. From the downloaded data, we used both `r onet.file1` and `r onet.file2`.
+
+
+# Methods
+
+## Mapping job titles to SOC
+
+O&ast;Net is structured around Standard Occupational Categories (SOC) [@blssoc]. Our main text has a normative list of job description based on data management practiced at university libraries. These may not match reported standard occupation titles exactly. The O&ast;Net data provides a long but not exhaustive list of alternate mentions of job titles for specific occupations (` `r onet.file2` `). Using both the standard occupation title as well as the alternate mention, we match the normative job title via probabilistic matching, using the Jaro-Winkler distance [@jarowinkler] as implemented in the R package `fuzzyjoin` [@fuzzyjoin]. We keep all *reasonable* matches ($d < `r jw.max`$) to obtain a list of similar occupations and their SOC codes.
+
+## Mapping SOC into salary ranges
+
+OES computes for each SOC code a salary range, comprised of annual salary and hourly wages, and characterized by the 25th and 75th percentile, as well as the median. We attach the annual salary distributions to each of the identified occupations (Table 1), and then collapse these statistics to a triplet of information for each normative job description (Table 2). To do so, we chose to use the minimum of all observed 25th percentiles, the median of all observed medians, and the maximum of all observed 75th percentiles. No weights were applied. An alternative implementation might use the employment shares to create weighted statistics. We do not attempt to compute reliability statistics, as the resulting table is meant to be indicative, not precise. Finally, Table 3 reports 
+
+
+# Results
+
+Table 1 lists the annual salaries, as of `r paste0("20",oes.src.version)`, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
+
+```{r table1, include=TRUE}
+nlm.extract <- readRDS(file.path(outputs,"nlm.extract.RDS"))
+kable(nlm.extract)
+```
+
+Table 2 lists the ranges, as defined above, for each of the normative description, based on the underlying occupations identified.
+
+```{r table2, include=TRUE}
+nlm.collapsed <- readRDS(file.path(outputs,"nlm.collapsed.RDS"))
+kable(nlm.collapsed)
+```
+
+Table 3 lists the statistics associated with each of the  `r salary.range.min`-`r salary.range.max` categories. While we defined the categories based on our own experience, ex ante, they match up well with observed median salaries in `r paste0("20",oes.src.version)`.
+
+```{r table3, include=TRUE}
+nlm.categories <- readRDS(file.path(outputs,"nlm.categories.RDS"))
+kable(nlm.categories)
+
+```
+
+# Full code and data
+
+The code and data underlying this chapter, including an exhaustive list of our own edits (inclusions and exclusions) to the list of the occupations, is available at https://github.com/labordynamicsinstitute/job-description-and-wages and (DOI TBD).
+
+# References
