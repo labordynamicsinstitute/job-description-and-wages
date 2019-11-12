@@ -71,7 +71,7 @@ OES computes for each SOC code a salary range, comprised of annual salary and ho
 
 # Results
 
-Table 1 lists the annual salaries, as of `r paste0("20",oes.src.version)`, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
+Table 1 ([nlm.extract.csv](filePath(outputs,"nlm.extract.RDS",removeUps=TRUE)) ) lists the annual salaries, as of `r paste0("20",oes.src.version)`, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
 
 ```{r table1, include=TRUE}
 nlm.extract <- readRDS(file.path(outputs,"nlm.extract.RDS"))
