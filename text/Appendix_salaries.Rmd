@@ -6,9 +6,9 @@ output:
   html_document:
     keep_md: yes
     number_sections: yes
+  word_document: default
   pdf_document:
     number_section: yes
-  word_document: default
 editor_options:
   chunk_output_type: console
 bibliography: oes.bib
@@ -71,21 +71,21 @@ OES computes for each SOC code a salary range, comprised of annual salary and ho
 
 # Results
 
-Table 1 ([nlm.extract.csv](filePath(outputs,"nlm.extract.RDS",removeUps=TRUE)) ) lists the annual salaries, as of `r paste0("20",oes.src.version)`, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
+Table 1 ([nlm.extract.csv](`r filePath("..",sub(basepath,"",outputs),"nlm.extract.csv",removeUps=TRUE)`)) lists the annual salaries, as of `r paste0("20",oes.src.version)`, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
 
 ```{r table1, include=TRUE}
 nlm.extract <- readRDS(file.path(outputs,"nlm.extract.RDS"))
 kable(nlm.extract)
 ```
 
-Table 2 lists the ranges, as defined above, for each of the normative description, based on the underlying occupations identified.
+Table 2 ([nlm.collapsed.csv](`r filePath("..",sub(basepath,"",outputs),"nlm.collapsed.csv",removeUps=TRUE)`))lists the ranges, as defined above, for each of the normative description, based on the underlying occupations identified.
 
 ```{r table2, include=TRUE}
 nlm.collapsed <- readRDS(file.path(outputs,"nlm.collapsed.RDS"))
 kable(nlm.collapsed)
 ```
 
-Table 3 lists the statistics associated with each of the  `r salary.range.min`-`r salary.range.max` categories. While we defined the categories based on our own experience, ex ante, they match up well with observed median salaries in `r paste0("20",oes.src.version)`.
+Table 3 ([nlm.categories.csv](`r filePath("..",sub(basepath,"",outputs),"nlm.categories.csv",removeUps=TRUE)`))lists the statistics associated with each of the  `r salary.range.min`-`r salary.range.max` categories. While we defined the categories based on our own experience, ex ante, they match up well with observed median salaries in `r paste0("20",oes.src.version)`.
 
 ```{r table3, include=TRUE}
 nlm.categories <- readRDS(file.path(outputs,"nlm.categories.RDS"))

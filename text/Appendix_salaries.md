@@ -1,14 +1,14 @@
 ---
 title: 'Appendix: Identifying salary ranges for jobs relevant to the data cycle'
 author: "Lars Vilhuber"
-date: "2019-10-30"
+date: "2019-11-12"
 output:
   html_document:
     keep_md: yes
     number_sections: yes
+  word_document: default
   pdf_document:
     number_section: yes
-  word_document: default
 editor_options:
   chunk_output_type: console
 bibliography: oes.bib
@@ -54,7 +54,7 @@ OES computes for each SOC code a salary range, comprised of annual salary and ho
 
 # Results
 
-Table 1 lists the annual salaries, as of 2018, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
+Table 1 ([nlm.extract.csv](../analysis/nlm.extract.csv)) lists the annual salaries, as of 2018, by job title (median, and the 25% and 75% percentile), for all occupations identified as having similar names as the normative description. Blank salaries ("NA") indicate that no occupation code could be found on O&ast;Net based on the normative description. 
 
 
 Job Title                         Title                                                                             SOC       Alternate Title            A_PCT25   A_MEDIAN   A_PCT75 
@@ -161,7 +161,7 @@ Facilities Manager                First-Line Supervisors of Mechanics, Installer
 Facilities Manager                Maintenance and Repair Workers, General                                           49-9071   Facilities Manager         29560     38300      50100   
 Data Scientist                    Computer and Information Research Scientists                                      15-1111   Data Scientist             91650     118370     149470  
 
-Table 2 lists the ranges, as defined above, for each of the normative description, based on the underlying occupations identified.
+Table 2 ([nlm.collapsed.csv](../analysis/nlm.collapsed.csv))lists the ranges, as defined above, for each of the normative description, based on the underlying occupations identified.
 
 
 Job Title                          PCT25   MEDIAN    PCT75
@@ -188,7 +188,7 @@ Researcher                         40670    79945   173180
 Senior Staff                         Inf       NA     -Inf
 Software Engineer                  79340   110000   149470
 
-Table 3 lists the statistics associated with each of the  L-VH categories. While we defined the categories based on our own experience, ex ante, they match up well with observed median salaries in 2018.
+Table 3 ([nlm.categories.csv](../analysis/nlm.categories.csv))lists the statistics associated with each of the  L-VH categories. While we defined the categories based on our own experience, ex ante, they match up well with observed median salaries in 2018.
 
 
 Relative Salary    PCT25   MEDIAN    PCT75    N   Missing
