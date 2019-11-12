@@ -14,7 +14,6 @@ This document describes the licensing of the various components of this reposito
 
 COPYRIGHT 2019 Lars Vilhuber
 
-=================================================================
 Creative Commons Attribution 4.0 International Public License
 =================================================================
 
